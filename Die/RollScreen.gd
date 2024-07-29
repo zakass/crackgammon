@@ -1,0 +1,38 @@
+extends Control
+
+class_name RollScreen
+
+const dieScene = preload("res://Die/Die.tscn")
+
+var dice: Array = []
+var rollAnimTimeCounter = 0
+
+signal roll_done
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	pivot_offset = Vector2(self.size.x / 2, 0)
+	var die1: Die = dieScene.instantiate().from_face(randi() % 6 + 1)
+	$DieContainer1.add_child(die1)
+	var die2: Die = dieScene.instantiate().from_face(randi() % 6 + 1)
+	$DieContainer2.add_child(die2)
+	dice.append(die1)
+	dice.append(die2)
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	if rollAnimTimeCounter > 0:
+		if rollAnimTimeCounter % ((300 - rollAnimTimeCounter) / 10 + 1) == 0:
+			for die: Die in dice:
+				die.randomize_face()
+		rollAnimTimeCounter -= 1
+		if rollAnimTimeCounter == 1:
+			roll_done.emit()
+
+func _on_roll_button_pressed():
+	rollAnimTimeCounter = 300
+	$RollButton.disabled = true
+
+func play_anim(anim_name: String):
+	$AnimationPlayer.play(anim_name)

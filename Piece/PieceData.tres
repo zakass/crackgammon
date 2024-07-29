@@ -1,0 +1,7 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://cwc1w0yq45e65"]
+
+[ext_resource type="Script" path="res://Piece/PieceData.gd" id="1_21w2n"]
+
+[resource]
+script = ExtResource("1_21w2n")
+team = 0

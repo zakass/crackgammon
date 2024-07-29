@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://bhlpjs4dxh055"]
+
+[ext_resource type="Script" path="res://Die/Die.gd" id="1_s34f2"]
+[ext_resource type="Texture2D" uid="uid://b26ux3eqyjshl" path="res://resources/Images/Crackgammon SpriteSheet.png" id="2_rlwd7"]
+
+[node name="Die" type="Node2D"]
+script = ExtResource("1_s34f2")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(22.5, 22.5)
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("2_rlwd7")
+region_enabled = true
+region_rect = Rect2(36, 0, 18, 18)

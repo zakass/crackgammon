@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=3 uid="uid://bllp0gqpir687"]
+
+[ext_resource type="Script" path="res://Piece/Piece.gd" id="1_w8678"]
+[ext_resource type="Texture2D" uid="uid://b26ux3eqyjshl" path="res://resources/Images/Crackgammon SpriteSheet.png" id="2_w0gqh"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_xplv8"]
+radius = 9.0
+
+[node name="Piece" type="Area2D"]
+scale = Vector2(4, 4)
+script = ExtResource("1_w8678")
+
+[node name="RedSprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_w0gqh")
+offset = Vector2(0, -9)
+region_enabled = true
+region_rect = Rect2(0, 0, 18, 18)
+
+[node name="BlueSprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_w0gqh")
+offset = Vector2(0, -9)
+region_enabled = true
+region_rect = Rect2(18, 0, 18, 18)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -9)
+shape = SubResource("CircleShape2D_xplv8")
