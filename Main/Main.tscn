@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://cqeh5y5htjuap"]
 
-[ext_resource type="Script" path="res://Main.gd" id="1_ctxj8"]
+[ext_resource type="Script" path="res://Main/Main.gd" id="1_ctxj8"]
 [ext_resource type="PackedScene" uid="uid://dis4laax5ovx0" path="res://Board/Board.tscn" id="2_tc25c"]
 [ext_resource type="Script" path="res://Board/Board.gd" id="3_ydlxh"]
 [ext_resource type="PackedScene" uid="uid://ceduqejngpwh7" path="res://UI/StartScreen.tscn" id="5_c7xb3"]
@@ -60,8 +60,6 @@ libraries = {
 
 [node name="StartScreen" parent="MainControl/ControlContainer" instance=ExtResource("5_c7xb3")]
 layout_mode = 1
-offset_right = 0.0
-offset_bottom = 0.0
 
 [node name="RollScreen" parent="MainControl/ControlContainer" instance=ExtResource("6_ojnqr")]
 visible = false
