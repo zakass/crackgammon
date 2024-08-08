@@ -21,7 +21,9 @@ func _handle_state_change(win: bool = false):
 	match state:
 		STATE.START:
 			print('start -> red roll')
+			$MainControl/ControlContainer/WinScreen.visible = false
 			state = STATE.RED_ROLL
+			$MainControl/ControlContainer/RollScreen.switch_team(PieceData.TEAM.RED)
 			$MainControl/ControlContainer/RollScreen.play_anim("Fades/fade_in")
 		STATE.RED_ROLL:
 			$MainControl/ControlContainer/TextureRect/AnimationPlayer.play("Fades/fade_out")
@@ -37,17 +39,29 @@ func _handle_state_change(win: bool = false):
 			$Board.dice_rolled(state, $MainControl/ControlContainer/RollScreen.dice)
 		STATE.RED_PLAY:
 			if win:
-				print("Red Win!")
+				$MainControl/ControlContainer/TextureRect/AnimationPlayer.play("Fades/fade_out")
+				$MainControl/ControlContainer/WinScreen.visible = true
+				$MainControl/ControlContainer/WinScreen/LabelContainer/Label.text = "Red Wins!"
+				$MainControl/ControlContainer/RollScreen.visible = false
+				$MainControl/ControlContainer/RollScreen.play_anim("expand")
+				state = STATE.START
 				return
 			$MainControl/ControlContainer/TextureRect/AnimationPlayer.play("Fades/fade_in")
 			$MainControl/ControlContainer/RollScreen.play_anim("expand")
+			$MainControl/ControlContainer/RollScreen.switch_team(PieceData.TEAM.BLUE)
 			print('red play -> blue roll')
 			state = STATE.BLUE_ROLL
 		STATE.BLUE_PLAY:
 			if win:
-				print("Blue Win!")
+				$MainControl/ControlContainer/TextureRect/AnimationPlayer.play("Fades/fade_out")
+				$MainControl/ControlContainer/WinScreen.visible = true
+				$MainControl/ControlContainer/WinScreen/LabelContainer/Label.text = "Blue Wins!"
+				$MainControl/ControlContainer/RollScreen.visible = false
+				$MainControl/ControlContainer/RollScreen.play_anim("expand")
+				state = STATE.START
 				return
 			$MainControl/ControlContainer/TextureRect/AnimationPlayer.play("Fades/fade_in")
 			$MainControl/ControlContainer/RollScreen.play_anim("expand")
+			$MainControl/ControlContainer/RollScreen.switch_team(PieceData.TEAM.RED)
 			print('blue play -> red roll')
 			state = STATE.RED_ROLL

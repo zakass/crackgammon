@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://bwhnog5oo3jxq"]
+[gd_scene load_steps=7 format=3 uid="uid://bwhnog5oo3jxq"]
 
 [ext_resource type="Script" path="res://Die/RollScreen.gd" id="1_p6oj2"]
 [ext_resource type="AnimationLibrary" uid="uid://cas5d46jfe51w" path="res://resources/Animations/Fades.res" id="2_08krm"]
@@ -20,7 +20,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("RollButton:visible")
+tracks/1/path = NodePath("CenterContainer/RollButton:visible")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -32,7 +32,7 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("RollButton:disabled")
+tracks/2/path = NodePath("CenterContainer/RollButton:disabled")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
@@ -59,7 +59,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("RollButton:visible")
+tracks/1/path = NodePath("CenterContainer/RollButton:visible")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -71,7 +71,7 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("RollButton:disabled")
+tracks/2/path = NodePath("CenterContainer/RollButton:disabled")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
@@ -87,19 +87,20 @@ _data = {
 "minimize": SubResource("Animation_v0d5g")
 }
 
+[sub_resource type="LabelSettings" id="LabelSettings_ci5gj"]
+font_size = 72
+
 [node name="RollScreen" type="Control"]
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = -1250.0
-offset_bottom = -800.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_p6oj2")
 
-[node name="RollButton" type="Button" parent="."]
+[node name="CenterContainer" type="CenterContainer" parent="."]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -111,16 +112,26 @@ offset_top = -31.0
 offset_right = 18.5
 grow_horizontal = 2
 grow_vertical = 0
+scale = Vector2(3, 3)
+pivot_offset = Vector2(19, 32)
+
+[node name="RollButton" type="Button" parent="CenterContainer"]
+layout_mode = 2
 text = "Roll
 "
 
-[node name="DieContainer1" type="Control" parent="."]
+[node name="DieContainer1" type="MarginContainer" parent="."]
 layout_mode = 1
-anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+scale = Vector2(4, 4)
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
 
-[node name="DieContainer2" type="Control" parent="."]
+[node name="Die" type="Control" parent="DieContainer1"]
+layout_mode = 2
+
+[node name="DieContainer2" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -128,7 +139,13 @@ anchor_right = 1.0
 offset_left = -40.0
 offset_bottom = 40.0
 grow_horizontal = 0
-mouse_filter = 1
+scale = Vector2(4, 4)
+pivot_offset = Vector2(60, 0)
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+
+[node name="Die" type="Control" parent="DieContainer2"]
+layout_mode = 2
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -136,4 +153,18 @@ libraries = {
 "Fades": ExtResource("2_08krm")
 }
 
-[connection signal="pressed" from="RollButton" to="." method="_on_roll_button_pressed"]
+[node name="TeamContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 40.0
+grow_horizontal = 2
+
+[node name="Label" type="Label" parent="TeamContainer"]
+layout_mode = 2
+label_settings = SubResource("LabelSettings_ci5gj")
+
+[connection signal="pressed" from="CenterContainer/RollButton" to="." method="_on_roll_button_pressed"]

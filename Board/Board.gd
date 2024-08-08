@@ -44,7 +44,6 @@ var numMoves: int = 0
 const initBoard = [
 			   [],
 			   [],
-			   [],
 			   [PieceData.TEAM.BLUE, PieceData.TEAM.BLUE, PieceData.TEAM.BLUE, PieceData.TEAM.BLUE, PieceData.TEAM.BLUE],
 			   [PieceData.TEAM.BLUE, PieceData.TEAM.BLUE, PieceData.TEAM.BLUE, PieceData.TEAM.BLUE, PieceData.TEAM.BLUE],
 			   [PieceData.TEAM.BLUE, PieceData.TEAM.BLUE, PieceData.TEAM.BLUE, PieceData.TEAM.BLUE, PieceData.TEAM.BLUE],
@@ -60,13 +59,39 @@ const initBoard = [
 			   [],
 			   [],
 			   [],
-			   [PieceData.TEAM.RED, PieceData.TEAM.RED, PieceData.TEAM.RED, PieceData.TEAM.RED, PieceData.TEAM.RED],
-			   [PieceData.TEAM.RED, PieceData.TEAM.RED, PieceData.TEAM.RED, PieceData.TEAM.RED, PieceData.TEAM.RED],
-			   [PieceData.TEAM.RED, PieceData.TEAM.RED, PieceData.TEAM.RED, PieceData.TEAM.RED, PieceData.TEAM.RED],
 			   [],
+			   [],
+			   [PieceData.TEAM.RED, PieceData.TEAM.RED, PieceData.TEAM.RED, PieceData.TEAM.RED, PieceData.TEAM.RED],
+			   [PieceData.TEAM.RED, PieceData.TEAM.RED, PieceData.TEAM.RED, PieceData.TEAM.RED, PieceData.TEAM.RED],
+			   [PieceData.TEAM.RED, PieceData.TEAM.RED, PieceData.TEAM.RED, PieceData.TEAM.RED, PieceData.TEAM.RED],
 			   [],
 			   []
 			]
+
+func restart_game():
+	for space in pieces:
+		for piece in space:
+			piece.queue_free()
+	for list in [redCaptured, blueCaptured, redWin, blueWin]:
+		for piece in list:
+			piece.queue_free()
+	redWin.clear()
+	blueWin.clear()
+	redCaptured.clear()
+	blueCaptured.clear()
+	pieces.clear()
+	for i in len(initBoard):
+		pieces.append([])
+		for j in len(initBoard[i]):
+			var piece: Piece
+			# i is space on board (0 < i < len), j is pos (0 < j)
+			var data: PieceData = PieceData.new(initBoard[i][j], i, _board_position(i, j))
+			piece = pieceScene.instantiate().with_data(data)
+			piece.move_made.connect(_calculate_move)
+			piece.z_index = 1
+			pieces[i].append(piece)
+			add_child(piece)
+	
 
 func _board_position(space: int, height: int, data: PieceData = null) -> Vector2:
 	if data and data.captured:
@@ -94,17 +119,7 @@ func _board_position(space: int, height: int, data: PieceData = null) -> Vector2
 		
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	for i in len(initBoard):
-		pieces.append([])
-		for j in len(initBoard[i]):
-			var piece: Piece
-			# i is space on board (0 < i < len), j is pos (0 < j)
-			var data: PieceData = PieceData.new(initBoard[i][j], i, _board_position(i, j))
-			piece = pieceScene.instantiate().with_data(data)
-			piece.move_made.connect(_calculate_move)
-			piece.z_index = 1
-			pieces[i].append(piece)
-			add_child(piece)
+	restart_game()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -116,30 +131,26 @@ func _get_moves(data: PieceData, earliest: int) -> Array:
 func _get_moves_helper(data: PieceData, index: int, moves: Array, earliest: int) -> Array:
 	if index >= len(diceArray):
 		return [moves]
+	if Util.sum(moves) >= 24 or Util.sum(moves) < 0:
+		return [moves]
 	var l = _get_moves_helper(data, index + 1, moves.duplicate(), earliest)
 	moves.append(diceArray[index])
 	var sum := Util.sum(moves)
 	var nextSpace = data.space + _get_dir(data.team) * sum
-	if earliest == -1:
-		if nextSpace >= 0 and nextSpace < len(pieces):
-			if len(pieces[nextSpace]) <= 1 or pieces[nextSpace][-1].data.team == data.team:
-				l.append_array(_get_moves_helper(data, index + 1, moves, earliest))
-	else:
-		var validMove := false
+	if nextSpace >= 0 and nextSpace < len(pieces):
+		if len(pieces[nextSpace]) <= 1 or pieces[nextSpace][-1].data.team == data.team:
+			l.append_array(_get_moves_helper(data, index + 1, moves, earliest))
+	elif earliest != -1:
 		var currSpace: int = nextSpace - _get_dir(data.team) * diceArray[index]
-		if nextSpace >= 0 and nextSpace < len(pieces):
-			if len(pieces[nextSpace]) <= 1 or pieces[nextSpace][-1].data.team == data.team:
-				validMove = true
-		else:
-			# sum of current dice >= space
-			if nextSpace == -1 or nextSpace == 24 or currSpace == earliest:
-				validMove = true
-		if validMove:
+		if nextSpace == -1 or nextSpace == 24 or currSpace == earliest:
 			if currSpace == earliest and len(pieces[currSpace]) == 1:
-				# set earliest to next
+				## set earliest to next
 				earliest += _get_dir(data.team)
-				while earliest != nextSpace and len(pieces[earliest]) == 0 or pieces[earliest][-1].data.team != data.team:
-					earliest += _get_dir(data.team)
+				while earliest != nextSpace and earliest >= 0 and earliest < 24:
+					if len(pieces[earliest]) == 0 or pieces[earliest][-1].data.team != data.team:
+						earliest += _get_dir(data.team)
+					else:
+						break
 			l.append_array(_get_moves_helper(data, index + 1, moves, earliest))
 	return l
 
@@ -186,6 +197,7 @@ func _calculate_move(moves: Array, piece: Piece) -> void:
 	_reset_piece_moves()
 	_reset_captured_positions()
 	if numMoves == 0:
+		print(len(redWin) == 15 or len(blueWin) == 15)
 		turn_finished.emit(len(redWin) == 15 or len(blueWin) == 15)
 	else:
 		_set_piece_moves(piece.data.team)
@@ -230,7 +242,7 @@ func _set_piece_moves(team: PieceData.TEAM) -> void:
 	for piece: Piece in array:
 		anyMove = _apply_moves(piece) or anyMove
 	if not anyMove:
-		turn_finished.emit()
+		turn_finished.emit(len(redWin) == 15 or len(blueWin) == 15)
 	
 func _apply_moves(piece: Piece, earliest: int = -1) -> bool:
 	var dir := _get_dir(piece.data.team)

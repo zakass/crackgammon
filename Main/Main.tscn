@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://cqeh5y5htjuap"]
+[gd_scene load_steps=10 format=3 uid="uid://cqeh5y5htjuap"]
 
 [ext_resource type="Script" path="res://Main/Main.gd" id="1_ctxj8"]
 [ext_resource type="PackedScene" uid="uid://dis4laax5ovx0" path="res://Board/Board.tscn" id="2_tc25c"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://ceduqejngpwh7" path="res://UI/StartScreen.tscn" id="5_c7xb3"]
 [ext_resource type="PackedScene" uid="uid://bwhnog5oo3jxq" path="res://Die/RollScreen.tscn" id="6_ojnqr"]
 [ext_resource type="AnimationLibrary" uid="uid://cas5d46jfe51w" path="res://resources/Animations/Fades.res" id="6_uy52f"]
+[ext_resource type="PackedScene" uid="uid://byx2ovhw8ckg0" path="res://UI/WinScreen.tscn" id="7_sulg7"]
 
 [sub_resource type="Gradient" id="Gradient_x3kcx"]
 interpolation_mode = 1
@@ -17,6 +18,7 @@ gradient = SubResource("Gradient_x3kcx")
 fill = 2
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(0, 1)
+repeat = 1
 metadata/_snap_enabled = true
 
 [node name="Main" type="Node2D"]
@@ -25,12 +27,18 @@ script = ExtResource("1_ctxj8")
 [node name="Board" parent="." instance=ExtResource("2_tc25c")]
 position = Vector2(135, 108)
 script = ExtResource("3_ydlxh")
+pieces = null
+redCaptured = null
+blueCaptured = null
+redWin = null
+blueWin = null
 
 [node name="MainControl" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 1350.0
 offset_bottom = 1080.0
+mouse_filter = 1
 
 [node name="ControlContainer" type="Control" parent="MainControl"]
 z_index = 2
@@ -64,10 +72,14 @@ layout_mode = 1
 [node name="RollScreen" parent="MainControl/ControlContainer" instance=ExtResource("6_ojnqr")]
 visible = false
 layout_mode = 1
-offset_right = 0.0
-offset_bottom = 0.0
 mouse_filter = 1
+
+[node name="WinScreen" parent="MainControl/ControlContainer" instance=ExtResource("7_sulg7")]
+visible = false
+layout_mode = 1
 
 [connection signal="turn_finished" from="Board" to="." method="_handle_state_change"]
 [connection signal="start_game" from="MainControl/ControlContainer/StartScreen" to="." method="_handle_state_change"]
 [connection signal="roll_done" from="MainControl/ControlContainer/RollScreen" to="." method="_handle_state_change"]
+[connection signal="restart_game" from="MainControl/ControlContainer/WinScreen" to="." method="_handle_state_change"]
+[connection signal="restart_game" from="MainControl/ControlContainer/WinScreen" to="Board" method="restart_game"]

@@ -1,0 +1,47 @@
+[gd_scene load_steps=2 format=3 uid="uid://byx2ovhw8ckg0"]
+
+[ext_resource type="Script" path="res://UI/WinScreen.gd" id="1_mvr7q"]
+
+[node name="WinScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_mvr7q")
+
+[node name="LabelContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 40.0
+grow_horizontal = 2
+
+[node name="Label" type="Label" parent="LabelContainer"]
+layout_mode = 2
+
+[node name="ResetContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -32.5
+offset_top = -40.0
+offset_right = 33.5
+grow_horizontal = 2
+grow_vertical = 0
+scale = Vector2(3, 3)
+pivot_offset = Vector2(33, 40)
+
+[node name="Button" type="Button" parent="ResetContainer"]
+layout_mode = 2
+text = "Restart
+"
+
+[connection signal="pressed" from="ResetContainer/Button" to="." method="_on_button_pressed"]

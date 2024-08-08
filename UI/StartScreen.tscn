@@ -1,7 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://ceduqejngpwh7"]
+[gd_scene load_steps=4 format=3 uid="uid://ceduqejngpwh7"]
 
 [ext_resource type="Script" path="res://UI/StartScreen.gd" id="1_gx5a1"]
 [ext_resource type="AnimationLibrary" uid="uid://cas5d46jfe51w" path="res://resources/Animations/Fades.res" id="2_lxulj"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_isilb"]
+font_size = 72
 
 [node name="StartScreen" type="Control"]
 custom_minimum_size = Vector2(0, 60)
@@ -13,7 +16,28 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_gx5a1")
 
-[node name="Label" type="Label" parent="."]
+[node name="BCenter" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -20.5
+offset_top = -31.0
+offset_right = 21.5
+offset_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+scale = Vector2(4, 4)
+pivot_offset = Vector2(21, 32)
+
+[node name="Button" type="Button" parent="BCenter"]
+layout_mode = 2
+text = "Play
+"
+
+[node name="LCenter" type="CenterContainer" parent="."]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -22,31 +46,18 @@ offset_left = -56.5
 offset_right = 56.5
 offset_bottom = 23.0
 grow_horizontal = 2
-scale = Vector2(4, 4)
-text = "Crackgammon"
-horizontal_alignment = 1
 
-[node name="Button" type="Button" parent="."]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.485
-anchor_top = 0.971
-anchor_right = 0.606
-anchor_bottom = 1.086
-offset_left = -0.25
-offset_top = 0.319946
-offset_right = -122.6
-offset_bottom = -92.8801
-grow_horizontal = 2
-grow_vertical = 0
-scale = Vector2(4, 4)
-text = "Play
-"
+[node name="Label" type="Label" parent="LCenter"]
+layout_mode = 2
+text = "Crackgammon"
+label_settings = SubResource("LabelSettings_isilb")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
 "Fades": ExtResource("2_lxulj")
 }
 
-[connection signal="button_down" from="Button" to="." method="_on_button_button_down"]
+[connection signal="button_down" from="BCenter/Button" to="." method="_on_button_button_down"]
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]
